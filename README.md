@@ -1,5 +1,6 @@
 # Inherited Stream
 
+[![Pub](https://img.shields.io/pub/v/inherited_stream.svg)](https://pub.dev/packages/inherited_stream)
 [![build](https://github.com/felangel/inherited_stream/workflows/build/badge.svg)](https://github.com/felangel/inherited_stream/actions)
 [![coverage](https://raw.githubusercontent.com/felangel/inherited_stream/main/coverage_badge.svg)](https://github.com/felangel/inherited_stream/actions)
 [![License: MIT](https://img.shields.io/badge/license-MIT-purple.svg)](https://opensource.org/licenses/MIT)
