@@ -1,0 +1,19 @@
+name: example
+description: A new Flutter project.
+
+publish_to: "none"
+
+version: 1.0.0+1
+
+environment:
+  sdk: ">=2.7.0 <3.0.0"
+
+dependencies:
+  flutter:
+    sdk: flutter
+  inherited_stream:
+    path: ../
+  rxdart: ^0.24.1
+
+flutter:
+  uses-material-design: true
