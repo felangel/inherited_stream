@@ -5,7 +5,7 @@
 [![coverage](https://raw.githubusercontent.com/felangel/inherited_stream/main/coverage_badge.svg)](https://github.com/felangel/inherited_stream/actions)
 [![License: MIT](https://img.shields.io/badge/license-MIT-purple.svg)](https://opensource.org/licenses/MIT)
 
-An [InheritedWidget] for a `Stream`, which updates its dependencies when the `Stream` emits.
+An InheritedWidget for Streams, which updates its dependencies when the Stream emits.
 
 ## Usage
 
