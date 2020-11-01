@@ -1,6 +1,6 @@
 name: inherited_stream
 description: An inherited widget for Streams, which updates its dependencies when the stream emits data.
-version: 1.0.0
+version: 1.1.0
 repository: https://github.com/felangel/inherited_stream
 issue_tracker: https://github.com/felangel/inherited_stream/issues
 homepage: https://github.com/felangel/inherited_stream
