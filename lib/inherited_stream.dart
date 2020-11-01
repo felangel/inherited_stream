@@ -107,3 +107,90 @@ class _InheritedStreamElement<T extends Stream<dynamic>>
     super.unmount();
   }
 }
+
+/// {@template deferred_inherited_stream}
+/// A variant of [InheritedStream] which supports a deferred subscription
+/// to the [Stream].
+///
+/// See also:
+///
+/// * [InheritedStream], like [DeferredInheritedStream] but immediately
+/// subscribes to the [Stream].
+/// {@endtemplate}
+abstract class DeferredInheritedStream<T extends Stream<dynamic>>
+    extends InheritedWidget {
+  /// {@macro deferred_inherited_strem}
+  const DeferredInheritedStream({
+    Key key,
+    this.deferredStream,
+    @required Widget child,
+  })  : assert(child != null),
+        super(key: key, child: child);
+
+  /// The deferred [Stream] object to which to subscribe.
+  final Future<T> deferredStream;
+
+  @override
+  bool updateShouldNotify(DeferredInheritedStream<T> oldWidget) {
+    return oldWidget.deferredStream != deferredStream;
+  }
+
+  @override
+  _DeferredInheritedStreamElement<T> createElement() =>
+      _DeferredInheritedStreamElement<T>(this);
+}
+
+class _DeferredInheritedStreamElement<T extends Stream<dynamic>>
+    extends InheritedElement {
+  _DeferredInheritedStreamElement(
+    DeferredInheritedStream<T> widget,
+  ) : super(widget) {
+    widget.deferredStream?.then((stream) {
+      _subscription = stream?.listen((dynamic _) => _handleUpdate());
+    });
+  }
+
+  StreamSubscription _subscription;
+
+  @override
+  DeferredInheritedStream<T> get widget =>
+      super.widget as DeferredInheritedStream<T>;
+
+  bool _dirty = false;
+
+  @override
+  void update(DeferredInheritedStream<T> newWidget) {
+    final oldStream = widget.deferredStream;
+    final newStream = newWidget.deferredStream;
+    if (oldStream != newStream) {
+      _subscription?.cancel();
+      newStream?.then((stream) {
+        _subscription = stream?.listen((dynamic _) => _handleUpdate());
+      });
+    }
+    super.update(newWidget);
+  }
+
+  @override
+  Widget build() {
+    if (_dirty) notifyClients(widget);
+    return super.build();
+  }
+
+  void _handleUpdate() {
+    _dirty = true;
+    markNeedsBuild();
+  }
+
+  @override
+  void notifyClients(DeferredInheritedStream<T> oldWidget) {
+    super.notifyClients(oldWidget);
+    _dirty = false;
+  }
+
+  @override
+  void unmount() {
+    _subscription?.cancel();
+    super.unmount();
+  }
+}
