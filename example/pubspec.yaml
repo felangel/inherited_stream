@@ -1,19 +1,17 @@
 name: example
 description: A new Flutter project.
-
-publish_to: "none"
-
 version: 1.0.0+1
+publish_to: none
 
 environment:
-  sdk: ">=2.7.0 <3.0.0"
+  sdk: ">=2.12.0 <3.0.0"
 
 dependencies:
   flutter:
     sdk: flutter
   inherited_stream:
     path: ../
-  rxdart: ^0.24.1
+  rxdart: ^0.26.0
 
 flutter:
   uses-material-design: true

@@ -6,29 +6,22 @@ import 'package:inherited_stream/inherited_stream.dart';
 
 class InheritedIntStream extends InheritedStream<Stream<int>> {
   InheritedIntStream({
-    Key key,
-    Stream<int> stream,
-    Widget child,
+    Key? key,
+    required Stream<int> stream,
+    required Widget child,
   }) : super(key: key, stream: stream, child: child);
 }
 
 class DeferredInheritedIntStream extends DeferredInheritedStream<Stream<int>> {
   DeferredInheritedIntStream({
-    Key key,
-    Future<Stream<int>> deferredStream,
-    Widget child,
+    Key? key,
+    required Future<Stream<int>> deferredStream,
+    required Widget child,
   }) : super(key: key, deferredStream: deferredStream, child: child);
 }
 
 void main() {
   group('InheritedStream', () {
-    test('throws AssertionError when child is null', () {
-      expect(
-        () => InheritedIntStream(stream: Stream.value(0), child: null),
-        throwsAssertionError,
-      );
-    });
-
     testWidgets('does not rebuild unnecessarily', (tester) async {
       var buildCount = 0;
       final controller = StreamController<int>();
@@ -94,7 +87,7 @@ void main() {
       expect(buildCount, equals(1));
 
       await tester.pumpWidget(InheritedIntStream(
-        stream: null,
+        stream: const Stream<int>.empty(),
         child: builder,
       ));
       expect(buildCount, equals(2));
@@ -102,16 +95,6 @@ void main() {
   });
 
   group('DeferredInheritedStream', () {
-    test('throws AssertionError when child is null', () {
-      expect(
-        () => DeferredInheritedIntStream(
-          deferredStream: Future.value(Stream.value(0)),
-          child: null,
-        ),
-        throwsAssertionError,
-      );
-    });
-
     testWidgets('does not rebuild unnecessarily', (tester) async {
       var buildCount = 0;
       final completer = Completer<Stream<int>>();
