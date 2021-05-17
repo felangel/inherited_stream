@@ -45,9 +45,9 @@ class _HomePageState extends State<HomePage> {
             child: const Icon(Icons.add),
             onPressed: () {
               final random = (Random().nextDouble() * 0.1);
-              final value = _subject.value + random >= 1.0
+              final value = _subject.value! + random >= 1.0
                   ? 1.0
-                  : _subject.value + random;
+                  : _subject.value! + random;
               _subject.add(value);
             },
           ),
@@ -87,17 +87,17 @@ class Progress extends StatelessWidget {
 class ProgressModel extends InheritedStream<ValueStream<double>> {
   /// {@macro progress_model}
   const ProgressModel({
-    Key key,
-    ValueStream<double> stream,
-    Widget child,
+    Key? key,
+    required ValueStream<double> stream,
+    required Widget child,
   }) : super(key: key, stream: stream, child: child);
 
   /// static method that calls [BuildContext.dependOnInheritedWidgetOfExactType]
   /// to register the context as a dependent and expose a `double`.
   static double of(BuildContext context) {
     return context
-        .dependOnInheritedWidgetOfExactType<ProgressModel>()
+        .dependOnInheritedWidgetOfExactType<ProgressModel>()!
         .stream
-        .value;
+        .value!;
   }
 }

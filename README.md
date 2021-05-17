@@ -14,16 +14,16 @@ An InheritedWidget for Streams, which updates its dependencies when the Stream e
 ```dart
 class ProgressModel extends InheritedStream<ValueStream<double>> {
   const ProgressModel({
-    Key key,
-    ValueStream<double> stream,
-    Widget child,
+    Key? key,
+    required ValueStream<double> stream,
+    required Widget child,
   }) : super(key: key, stream: stream, child: child);
 
   static double of(BuildContext context) {
     return context
-        .dependOnInheritedWidgetOfExactType<ProgressModel>()
+        .dependOnInheritedWidgetOfExactType<ProgressModel>()!
         .stream
-        .value;
+        .value!;
   }
 }
 ```

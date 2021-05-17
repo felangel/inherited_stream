@@ -31,11 +31,10 @@ abstract class InheritedStream<T extends Stream<dynamic>>
     extends InheritedWidget {
   /// {@macro inherited_Stream}
   const InheritedStream({
-    Key key,
-    this.stream,
-    @required Widget child,
-  })  : assert(child != null),
-        super(key: key, child: child);
+    Key? key,
+    required this.stream,
+    required Widget child,
+  }) : super(key: key, child: child);
 
   /// The [Stream] object to which to subscribe.
   ///
@@ -63,10 +62,10 @@ abstract class InheritedStream<T extends Stream<dynamic>>
 class _InheritedStreamElement<T extends Stream<dynamic>>
     extends InheritedElement {
   _InheritedStreamElement(InheritedStream<T> widget) : super(widget) {
-    _subscription = widget.stream?.listen((dynamic _) => _handleUpdate());
+    _subscription = widget.stream.listen((dynamic _) => _handleUpdate());
   }
 
-  StreamSubscription _subscription;
+  late StreamSubscription _subscription;
 
   @override
   InheritedStream<T> get widget => super.widget as InheritedStream<T>;
@@ -78,8 +77,8 @@ class _InheritedStreamElement<T extends Stream<dynamic>>
     final oldStream = widget.stream;
     final newStream = newWidget.stream;
     if (oldStream != newStream) {
-      _subscription?.cancel();
-      _subscription = newStream?.listen((dynamic _) => _handleUpdate());
+      _subscription.cancel();
+      _subscription = newStream.listen((dynamic _) => _handleUpdate());
     }
     super.update(newWidget);
   }
@@ -103,7 +102,7 @@ class _InheritedStreamElement<T extends Stream<dynamic>>
 
   @override
   void unmount() {
-    _subscription?.cancel();
+    _subscription.cancel();
     super.unmount();
   }
 }
@@ -121,11 +120,10 @@ abstract class DeferredInheritedStream<T extends Stream<dynamic>>
     extends InheritedWidget {
   /// {@macro deferred_inherited_strem}
   const DeferredInheritedStream({
-    Key key,
-    this.deferredStream,
-    @required Widget child,
-  })  : assert(child != null),
-        super(key: key, child: child);
+    Key? key,
+    required this.deferredStream,
+    required Widget child,
+  }) : super(key: key, child: child);
 
   /// The deferred [Stream] object to which to subscribe.
   final Future<T> deferredStream;
@@ -145,12 +143,12 @@ class _DeferredInheritedStreamElement<T extends Stream<dynamic>>
   _DeferredInheritedStreamElement(
     DeferredInheritedStream<T> widget,
   ) : super(widget) {
-    widget.deferredStream?.then((stream) {
-      _subscription = stream?.listen((dynamic _) => _handleUpdate());
+    widget.deferredStream.then((stream) {
+      _subscription = stream.listen((dynamic _) => _handleUpdate());
     });
   }
 
-  StreamSubscription _subscription;
+  StreamSubscription? _subscription;
 
   @override
   DeferredInheritedStream<T> get widget =>
@@ -164,8 +162,8 @@ class _DeferredInheritedStreamElement<T extends Stream<dynamic>>
     final newStream = newWidget.deferredStream;
     if (oldStream != newStream) {
       _subscription?.cancel();
-      newStream?.then((stream) {
-        _subscription = stream?.listen((dynamic _) => _handleUpdate());
+      newStream.then((stream) {
+        _subscription = stream.listen((dynamic _) => _handleUpdate());
       });
     }
     super.update(newWidget);
