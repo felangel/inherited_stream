@@ -23,7 +23,7 @@ class ProgressModel extends InheritedStream<ValueStream<double>> {
     return context
         .dependOnInheritedWidgetOfExactType<ProgressModel>()!
         .stream
-        .value!;
+        .value;
   }
 }
 ```
