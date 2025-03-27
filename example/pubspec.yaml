@@ -11,7 +11,7 @@ dependencies:
     sdk: flutter
   inherited_stream:
     path: ../
-  rxdart: ^0.26.0
+  rxdart: ^0.28.0
 
 flutter:
   uses-material-design: true

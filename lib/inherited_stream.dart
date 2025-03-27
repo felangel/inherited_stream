@@ -1,5 +1,3 @@
-library inherited_stream;
-
 import 'dart:async';
 
 import 'package:flutter/widgets.dart';
@@ -31,9 +29,9 @@ abstract class InheritedStream<T extends Stream<dynamic>>
     extends InheritedWidget {
   /// {@macro inherited_Stream}
   const InheritedStream({
-    Key? key,
     required this.stream,
     required Widget child,
+    Key? key,
   }) : super(key: key, child: child);
 
   /// The [Stream] object to which to subscribe.
@@ -55,8 +53,7 @@ abstract class InheritedStream<T extends Stream<dynamic>>
   }
 
   @override
-  _InheritedStreamElement<T> createElement() =>
-      _InheritedStreamElement<T>(this);
+  InheritedElement createElement() => _InheritedStreamElement<T>(this);
 }
 
 class _InheritedStreamElement<T extends Stream<dynamic>>
@@ -65,7 +62,7 @@ class _InheritedStreamElement<T extends Stream<dynamic>>
     _subscription = widget.stream.listen((dynamic _) => _handleUpdate());
   }
 
-  late StreamSubscription _subscription;
+  late StreamSubscription<dynamic> _subscription;
 
   @override
   InheritedStream<T> get widget => super.widget as InheritedStream<T>;
@@ -120,9 +117,9 @@ abstract class DeferredInheritedStream<T extends Stream<dynamic>>
     extends InheritedWidget {
   /// {@macro deferred_inherited_strem}
   const DeferredInheritedStream({
-    Key? key,
     required this.deferredStream,
     required Widget child,
+    Key? key,
   }) : super(key: key, child: child);
 
   /// The deferred [Stream] object to which to subscribe.
@@ -134,8 +131,7 @@ abstract class DeferredInheritedStream<T extends Stream<dynamic>>
   }
 
   @override
-  _DeferredInheritedStreamElement<T> createElement() =>
-      _DeferredInheritedStreamElement<T>(this);
+  InheritedElement createElement() => _DeferredInheritedStreamElement<T>(this);
 }
 
 class _DeferredInheritedStreamElement<T extends Stream<dynamic>>
@@ -148,7 +144,7 @@ class _DeferredInheritedStreamElement<T extends Stream<dynamic>>
     });
   }
 
-  StreamSubscription? _subscription;
+  StreamSubscription<dynamic>? _subscription;
 
   @override
   DeferredInheritedStream<T> get widget =>
@@ -191,4 +187,103 @@ class _DeferredInheritedStreamElement<T extends Stream<dynamic>>
     _subscription?.cancel();
     super.unmount();
   }
+}
+
+/// {@template lazy_inherited_stream}
+/// A variant of [InheritedStream] which supports a deferred subscription
+/// to the [Stream].
+///
+/// See also:
+///
+/// * [InheritedStream], like [DeferredInheritedStream] but immediately
+/// subscribes to the [Stream].
+/// {@endtemplate}
+abstract class LazyInheritedStream<T extends Stream<dynamic>>
+    extends InheritedWidget {
+  /// {@macro deferred_inherited_strem}
+  LazyInheritedStream({
+    required this.stream,
+    required Widget child,
+    this.lazy = true,
+    Key? key,
+  })  : _value = _LazyValue<T>(create: stream),
+        super(key: key, child: child) {
+    if (!lazy) _value.value;
+  }
+
+  /// The lazy [Stream] object to which to subscribe.
+  final T Function() stream;
+
+  /// Whether or not to lazily subscribe to the stream.
+  /// Defaults to true.
+  final bool lazy;
+
+  final _LazyValue<T> _value;
+
+  /// The lazily computed value.
+  T get value => _value.value;
+
+  @override
+  bool updateShouldNotify(LazyInheritedStream<T> oldWidget) {
+    return oldWidget.stream != stream;
+  }
+
+  @override
+  InheritedElement createElement() => _LazyInheritedStreamElement<T>(this);
+}
+
+class _LazyInheritedStreamElement<T extends Stream<dynamic>>
+    extends InheritedElement {
+  _LazyInheritedStreamElement(LazyInheritedStream<T> widget) : super(widget);
+
+  StreamSubscription<dynamic>? _subscription;
+
+  @override
+  LazyInheritedStream<T> get widget => super.widget as LazyInheritedStream<T>;
+
+  bool _dirty = false;
+
+  @override
+  void update(LazyInheritedStream<T> newWidget) {
+    final oldValue = widget.stream;
+    final newValue = newWidget.stream;
+    if (oldValue != newValue && _subscription != null) {
+      _subscription?.cancel();
+      _subscription = newWidget.value.listen((dynamic _) => _handleUpdate());
+    }
+    super.update(newWidget);
+  }
+
+  @override
+  Widget build() {
+    if (_dirty) notifyClients(widget);
+    return super.build();
+  }
+
+  void _handleUpdate() {
+    _dirty = true;
+    markNeedsBuild();
+  }
+
+  @override
+  void notifyClients(LazyInheritedStream<T> oldWidget) {
+    super.notifyClients(oldWidget);
+    _dirty = false;
+  }
+
+  @override
+  void unmount() {
+    _subscription?.cancel();
+    super.unmount();
+  }
+}
+
+class _LazyValue<T> {
+  _LazyValue({required this.create});
+
+  final T Function() create;
+
+  T? _value;
+
+  T get value => _value ??= create();
 }
