@@ -7,7 +7,7 @@ void main() => runApp(const MyApp());
 
 /// Root Material App
 class MyApp extends StatelessWidget {
-  const MyApp({Key? key}) : super(key: key);
+  const MyApp({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -17,7 +17,7 @@ class MyApp extends StatelessWidget {
 
 /// Home Page which manages the state of the [ValueStream].
 class HomePage extends StatefulWidget {
-  const HomePage({Key? key}) : super(key: key);
+  const HomePage({super.key});
 
   @override
   State<HomePage> createState() => _HomePageState();
@@ -52,9 +52,10 @@ class _HomePageState extends State<HomePage> {
             child: const Icon(Icons.add),
             onPressed: () {
               final random = Random().nextDouble() * 0.1;
-              final value = _subject.value + random >= 1.0
-                  ? 1.0
-                  : _subject.value + random;
+              final value =
+                  _subject.value + random >= 1.0
+                      ? 1.0
+                      : _subject.value + random;
               _subject.add(value);
             },
           ),
@@ -72,7 +73,7 @@ class _HomePageState extends State<HomePage> {
 /// StatelessWidget which renders a [CircularProgressIndicator] based
 /// on the value of the [ProgressModel].
 class Progress extends StatelessWidget {
-  const Progress({Key? key}) : super(key: key);
+  const Progress({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -95,11 +96,7 @@ class Progress extends StatelessWidget {
 /// {@endtemplate}
 class ProgressModel extends InheritedStream<ValueStream<double>> {
   /// {@macro progress_model}
-  const ProgressModel({
-    required ValueStream<double> stream,
-    required Widget child,
-    Key? key,
-  }) : super(key: key, stream: stream, child: child);
+  const ProgressModel({required super.stream, required super.child, super.key});
 
   /// static method that calls [BuildContext.dependOnInheritedWidgetOfExactType]
   /// to register the context as a dependent and expose a `double`.
