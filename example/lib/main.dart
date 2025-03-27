@@ -38,8 +38,10 @@ class _HomePageState extends State<HomePage> {
       body: Padding(
         padding: const EdgeInsets.all(8),
         child: Center(
-          child:
-              ProgressModel(stream: _subject.stream, child: const Progress()),
+          child: ProgressModel(
+            stream: _subject.stream,
+            child: const Progress(),
+          ),
         ),
       ),
       floatingActionButton: Column(
