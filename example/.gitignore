@@ -31,6 +31,14 @@
 .pub/
 /build/
 
+# Flutter Platforms
+android/
+ios/
+linux/
+macos/
+web/
+windows/
+
 # Web related
 lib/generated_plugin_registrant.dart
 

@@ -3,24 +3,28 @@ import 'package:flutter/material.dart';
 import 'package:inherited_stream/inherited_stream.dart';
 import 'package:rxdart/rxdart.dart';
 
-void main() => runApp(MyApp());
+void main() => runApp(const MyApp());
 
 /// Root Material App
 class MyApp extends StatelessWidget {
+  const MyApp({super.key});
+
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(home: HomePage());
+    return const MaterialApp(home: HomePage());
   }
 }
 
 /// Home Page which manages the state of the [ValueStream].
 class HomePage extends StatefulWidget {
+  const HomePage({super.key});
+
   @override
-  _HomePageState createState() => _HomePageState();
+  State<HomePage> createState() => _HomePageState();
 }
 
 class _HomePageState extends State<HomePage> {
-  final _subject = BehaviorSubject<double>.seeded(0.0);
+  final _subject = BehaviorSubject<double>.seeded(0);
 
   @override
   void dispose() {
@@ -34,7 +38,10 @@ class _HomePageState extends State<HomePage> {
       body: Padding(
         padding: const EdgeInsets.all(8),
         child: Center(
-          child: ProgressModel(stream: _subject.stream, child: Progress()),
+          child: ProgressModel(
+            stream: _subject.stream,
+            child: const Progress(),
+          ),
         ),
       ),
       floatingActionButton: Column(
@@ -44,10 +51,11 @@ class _HomePageState extends State<HomePage> {
           FloatingActionButton(
             child: const Icon(Icons.add),
             onPressed: () {
-              final random = (Random().nextDouble() * 0.1);
-              final value = _subject.value! + random >= 1.0
-                  ? 1.0
-                  : _subject.value! + random;
+              final random = Random().nextDouble() * 0.1;
+              final value =
+                  _subject.value + random >= 1.0
+                      ? 1.0
+                      : _subject.value + random;
               _subject.add(value);
             },
           ),
@@ -65,6 +73,8 @@ class _HomePageState extends State<HomePage> {
 /// StatelessWidget which renders a [CircularProgressIndicator] based
 /// on the value of the [ProgressModel].
 class Progress extends StatelessWidget {
+  const Progress({super.key});
+
   @override
   Widget build(BuildContext context) {
     final progress = ProgressModel.of(context);
@@ -74,7 +84,7 @@ class Progress extends StatelessWidget {
       children: [
         CircularProgressIndicator(value: progress, strokeWidth: 8),
         const SizedBox(height: 16),
-        Text('$percentage%', style: Theme.of(context).textTheme.headline6),
+        Text('$percentage%', style: Theme.of(context).textTheme.titleLarge),
       ],
     );
   }
@@ -86,11 +96,7 @@ class Progress extends StatelessWidget {
 /// {@endtemplate}
 class ProgressModel extends InheritedStream<ValueStream<double>> {
   /// {@macro progress_model}
-  const ProgressModel({
-    Key? key,
-    required ValueStream<double> stream,
-    required Widget child,
-  }) : super(key: key, stream: stream, child: child);
+  const ProgressModel({required super.stream, required super.child, super.key});
 
   /// static method that calls [BuildContext.dependOnInheritedWidgetOfExactType]
   /// to register the context as a dependent and expose a `double`.
@@ -98,6 +104,6 @@ class ProgressModel extends InheritedStream<ValueStream<double>> {
     return context
         .dependOnInheritedWidgetOfExactType<ProgressModel>()!
         .stream
-        .value!;
+        .value;
   }
 }
