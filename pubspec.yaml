@@ -7,7 +7,7 @@ homepage: https://github.com/felangel/inherited_stream
 documentation: https://github.com/felangel/inherited_stream
 
 environment:
-  sdk: ">=2.14.0 <4.0.0"
+  sdk: ">=2.12.0 <4.0.0"
 
 dependencies:
   flutter:
